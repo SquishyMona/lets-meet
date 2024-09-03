@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 
 const config = {
   apiKey: "AIzaSyBGefhKciSjLoHBuHPuv1bybxS7zpsKYsw",
-  authDomain: "lets-meet-web--lets-meet-fbproject.us-central1.hosted.app",
+  authDomain: "lets-meet-fbproject.firebaseapp.com",
   projectId: "lets-meet-fbproject",
   storageBucket: "lets-meet-fbproject.appspot.com",
   messagingSenderId: "995943991927",
