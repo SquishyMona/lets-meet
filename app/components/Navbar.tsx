@@ -2,26 +2,35 @@
 
 import { Navbar, Avatar, Dropdown, DarkThemeToggle } from "flowbite-react";
 import { dropdownTheme } from "./themes/DropdownTheme";
-import { useUser } from "../lib/getUser";
 import Image from "next/image";
 import { signInWithGoogle, signOut } from "../lib/firebase/auth";
+import { useState, useEffect } from "react";
+import { connectAuthEmulator, getAuth, getRedirectResult, User } from "firebase/auth";
+import useUserSession from "../lib/useUserSession";
 
-export default function NavbarComponent() {
-    const user = useUser();
+
+export default function NavbarComponent(initialUser: any) {
+    const user = useUserSession(initialUser);
 
     function handleSignIn(){
         console.log("Sign in with Google");
         signInWithGoogle();
     }
 
-    const handleSignOut = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-        signOut();
-    }
+    useEffect(() => {
+        const auth = getAuth();
+        console.log(process.env.NODE_ENV);
+        process.env.NODE_ENV === "development" ? connectAuthEmulator(auth, "http://localhost:9099") : null;
+        getRedirectResult(auth).then((result) => {
+            if (result?.user) {
+                console.log("User signed in");
+            }
+        })
+    }, [])
 
     return (
         <Navbar fluid className="dark:bg-zinc-900">
-            <Navbar.Brand href="https://flowbite-react.com">
+            <Navbar.Brand href="/">
                 <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
                     Let&apos;s Meet
                 </span>
@@ -35,7 +44,7 @@ export default function NavbarComponent() {
                     label={
                     <Avatar
                       alt="User settings"
-                      img={user?.photoURL ? user.photoURL : "https://flowbite.com/docs/images/people/profile-picture-5.jpg"}
+                      img={user?.photoURL ?? null}
                       rounded
                     />
                     }
@@ -43,9 +52,9 @@ export default function NavbarComponent() {
                 {user ? (
                     <>
                         <Dropdown.Header>
-                            <span className="block text-sm">Bonnie Green</span>
+                            <span className="block text-sm">{user.displayName}</span>
                             <span className="block truncate text-sm font-medium">
-                                name@flowbite.com
+                                {user.email}
                             </span>
                         </Dropdown.Header>
                         <Navbar.Collapse>
@@ -53,7 +62,7 @@ export default function NavbarComponent() {
                         <Dropdown.Item>My Events</Dropdown.Item>
                         <Dropdown.Item>Settings</Dropdown.Item>
                         <Dropdown.Divider />
-                        <Dropdown.Item className="rounded-b-2xl">Sign out</Dropdown.Item>
+                        <Dropdown.Item onClick={() => signOut()} className="rounded-b-2xl">Sign out</Dropdown.Item>
                     </>
                 ) : <Dropdown.Item onClick={() => handleSignIn()} className="rounded-2xl">Sign In</Dropdown.Item>
                 }

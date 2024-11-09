@@ -1,10 +1,12 @@
-import { DarkThemeToggle } from "flowbite-react";
+import { getAuthenticatedServerApp } from "./lib/firebase/serverApp";
 
-export default function Home() {
-  return (
-    <main className="flex min-h-screen items-center justify-center gap-2">
-      <h1 className="text-2xl dark:text-white">Flowbite React + Next.js</h1>
-      <DarkThemeToggle />
-    </main>
-  );
+export default async function Home() {
+  const { currentUser } = await getAuthenticatedServerApp();
+  console.log(currentUser);
+
+    return (
+        <main className="flex min-h-screen gap-2">
+            <h1 className="text-4xl font-semibold m-10 dark:text-white">Welcome to {currentUser?.displayName}</h1>
+        </main>
+    );
 }
