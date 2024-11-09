@@ -44,7 +44,7 @@ export default function NavbarComponent(initialUser: any) {
                     label={
                     <Avatar
                       alt="User settings"
-                      img={user?.photoURL ?? null}
+                      img={user?.photoURL ?? undefined}
                       rounded
                     />
                     }
