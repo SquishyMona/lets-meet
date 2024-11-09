@@ -7,6 +7,7 @@ import { signInWithGoogle, signOut } from "../lib/firebase/auth";
 import { useState, useEffect } from "react";
 import { connectAuthEmulator, getAuth, getRedirectResult, User } from "firebase/auth";
 import useUserSession from "../lib/useUserSession";
+import { auth } from "../lib/firebase/config";
 
 
 export default function NavbarComponent(initialUser: any) {
@@ -18,7 +19,6 @@ export default function NavbarComponent(initialUser: any) {
     }
 
     useEffect(() => {
-        const auth = getAuth();
         console.log("Auth: ", auth);
         console.log(process.env.NODE_ENV);
         if (process.env.NODE_ENV === "development") {
@@ -30,7 +30,7 @@ export default function NavbarComponent(initialUser: any) {
                 console.log("User signed in");
             }
         })
-    }, [])
+    }, [auth])
 
     return (
         <Navbar fluid className="dark:bg-zinc-900">
