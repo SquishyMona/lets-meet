@@ -1,7 +1,7 @@
 
 
 import { useState, useEffect } from 'react';
-import { User } from 'firebase/auth';
+import { getAuth, getRedirectResult, User } from 'firebase/auth';
 import { onAuthStateChanged } from './firebase/auth';
 import { firebaseConfig } from '@/app/lib/firebase/config';
 import { useRouter } from 'next/navigation';
@@ -25,6 +25,14 @@ export default function useUserSession(initialUser: User | null) {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged((authUser) => {
+            getRedirectResult(getAuth()).then((result) => {
+                if (result?.user) {
+                    console.log("Redirect recieved, User signed in");
+                }
+                else {
+                    console.log("No redirect recieved");
+                }
+            });
             setUser(authUser);
         })
 

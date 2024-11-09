@@ -13,6 +13,7 @@ import { auth } from "../lib/firebase/config";
 export default function NavbarComponent(initialUser: any) {
     const user = useUserSession(initialUser);
 
+
     function handleSignIn(){
         console.log("Sign in with Google");
         signInWithGoogle();
@@ -24,13 +25,8 @@ export default function NavbarComponent(initialUser: any) {
         if (process.env.NODE_ENV === "development") {
             connectAuthEmulator(auth, "http://localhost:9099")
         }
-        getRedirectResult(auth).then((result) => {
-            console.log("Redirect result: ", result);
-            if (result?.user) {
-                console.log("User signed in");
-            }
-        })
-    }, [auth])
+
+    }, [])
 
     return (
         <Navbar fluid className="dark:bg-zinc-900">
