@@ -19,11 +19,13 @@ export default function NavbarComponent(initialUser: any) {
 
     useEffect(() => {
         const auth = getAuth();
+        console.log("Auth: ", auth);
         console.log(process.env.NODE_ENV);
         if (process.env.NODE_ENV === "development") {
             connectAuthEmulator(auth, "http://localhost:9099")
         }
         getRedirectResult(auth).then((result) => {
+            console.log("Redirect result: ", result);
             if (result?.user) {
                 console.log("User signed in");
             }
