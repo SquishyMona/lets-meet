@@ -1,0 +1,8 @@
+{
+    "rewrites": [
+      {
+        "source": "/api/__/handler:match*",
+        "destination": "https://lets-meet-scheduling-app.firebaseapp.com/api/__/handler:match*"
+      }
+    ]
+  }
