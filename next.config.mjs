@@ -4,7 +4,7 @@ const nextConfig = {
         return [
             {
                 source: '/api/__/handler',
-                destination: 'http://lets-meet-scheduling-app.firebaseapp.com/api/__/handler',
+                destination: 'https://lets-meet-scheduling-app.firebaseapp.com/api/__/handler',
             },
         ];
     }
