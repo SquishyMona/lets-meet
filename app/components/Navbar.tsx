@@ -29,13 +29,13 @@ function useUserSession(user: any) {
   
     useEffect(() => {
       if ("serviceWorker" in navigator) {
-        return onAuthStateChanged(async (authUser) => {
+        return onAuthStateChanged(async (authUser: any) => {
           if (user?.uid === authUser?.uid) {
             return;
           }
           await navigator.serviceWorker.ready;
           await fetch(`/__/auth/wait/${authUser?.uid}`);
-          window.location.reload();  
+            window.location.reload();
         });
       }
     }, [user]);
@@ -55,15 +55,6 @@ export default function NavbarComponent({ initialUser } : { initialUser: any }) 
         const auth = getAuth();
         console.log("Auth: ", auth);
         console.log(process.env.NODE_ENV);
-        if (process.env.NODE_ENV === "development") {
-            connectAuthEmulator(auth, "http://localhost:9099")
-        }
-        getRedirectResult(auth).then((result) => {
-            console.log("Redirect result: ", result);
-            if (result?.user) {
-                console.log("User signed in");
-            }
-        })
     }, [])
 
     return (

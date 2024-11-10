@@ -7702,20 +7702,13 @@
       return;
     }
     if (pathname.startsWith("/_next/")) return;
-    if ((event.request.method === "GET" || event.request.method === "POST") && !pathname.includes(".")) {
-      event.respondWith(fetchWithFirebaseHeaders(event.request));
+    if ((event.request.method === "GET" || event.request.method === "HEAD") && pathname.includes(".")) {
+      return;
     }
+    event.respondWith(fetchWithFirebaseHeaders(event.request));
   });
   async function fetchWithFirebaseHeaders(request) {
-    let authIdToken = await getAuthIdToken();
-    if (!authIdToken) {
-      await new Promise((resolve) => setTimeout(resolve, 250));
-      authIdToken = await getAuthIdToken();
-    }
-    if (!authIdToken) {
-      await new Promise((resolve) => setTimeout(resolve, 250));
-      authIdToken = await getAuthIdToken();
-    }
+    const authIdToken = await getAuthIdToken();
     if (authIdToken) {
       const headers = new Headers(request.headers);
       headers.append("Authorization", `Bearer ${authIdToken}`);
@@ -7725,13 +7718,13 @@
       console.error(reason);
       return new Response("Fail.", {
         status: 500,
-        headers: { "Content-Type": "text/html" }
+        headers: { "content-type": "text/html" }
       });
     });
   }
   async function waitForMatchingUid(_uid) {
     const uid = _uid === "undefined" ? void 0 : _uid;
-    await authStateReady();
+    await auth.authStateReady();
     await new Promise((resolve) => {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
         if (user?.uid === uid) {
@@ -7742,24 +7735,12 @@
     });
     return new Response(void 0, {
       status: 200,
-      headers: { "Cache-Control": "no-store" }
-    });
-  }
-  function authStateReady() {
-    return new Promise((resolve) => {
-      if (auth.currentUser !== void 0) {
-        resolve();
-      } else {
-        const unsubscribe = onAuthStateChanged(auth, () => {
-          unsubscribe();
-          resolve();
-        });
-      }
+      headers: { "cache-control": "no-store" }
     });
   }
   async function getAuthIdToken() {
-    await authStateReady();
-    if (!auth.currentUser) return null;
+    await auth.authStateReady();
+    if (!auth.currentUser) return;
     return await getIdToken(auth.currentUser);
   }
 })();
