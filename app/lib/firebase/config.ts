@@ -22,7 +22,5 @@ export const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
-if (process.env.NODE_ENV === "development") {
-  connectAuthEmulator(auth, "http://localhost:9099")
-}
+
 const analytics = isSupported().then(supported => supported ? getAnalytics(app) : null);
