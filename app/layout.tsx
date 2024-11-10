@@ -24,7 +24,7 @@ export default async function RootLayout({
         <ThemeModeScript />
       </head>
       <body className={`dark:bg-zinc-900 ${inter.className}`}>
-        <NavbarComponent initialUser={currentUser}/>
+        <NavbarComponent initialUser={currentUser?.toJSON()}/>
         {children}
       </body>
     </html>
