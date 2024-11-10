@@ -35,7 +35,7 @@ function useUserSession(user: any) {
           }
           await navigator.serviceWorker.ready;
           await fetch(`/__/auth/wait/${authUser?.uid}`);
-
+          window.location.reload();  
         });
       }
     }, [user]);
