@@ -5,26 +5,21 @@ import { initializeServerApp } from "firebase/app"
 import { firebaseConfig } from "./config"
 import { connectAuthEmulator, getAuth } from "firebase/auth";
 
-export async function getAuthenticatedServerApp() {
-    try {
-        const authIdToken = headers().get("Authorization")?.split("Bearer ")[1];
+let emulatorsActive = false;
 
-        const firebaseServerApp = initializeServerApp(firebaseConfig, {
-                authIdToken
-            }
-        );
-
-        const auth = getAuth(firebaseServerApp);
-        if (process.env.NODE_ENV === "development") {
-            connectAuthEmulator(auth, "http://localhost:9099");
-        }
-        await auth.authStateReady();
-        console.log(`Auth server user: ${auth.currentUser}`)
-
-        return { firebaseServerApp, currentUser: auth.currentUser };
+const authIdToken = headers().get("Authorization")?.split("Bearer ")[1];
+console.log(`Auth ID token: ${authIdToken}`);
+const firebaseServerApp = initializeServerApp(firebaseConfig, {
+        authIdToken
     }
-    catch (error) {
-        console.error("Error initializing server app: ", error);
-        return { firebaseServerApp: null, currentUser: null };
-    }
+);
+const auth = getAuth(firebaseServerApp);
+if (process.env.NODE_ENV === "development" || !emulatorsActive) {
+    connectAuthEmulator(auth, "http://localhost:9099");
+    emulatorsActive = true;
 }
+await auth.authStateReady();
+console.log(`Auth server user: ${auth.currentUser}`)
+
+const serverUser = auth.currentUser;
+export { firebaseServerApp, serverUser };

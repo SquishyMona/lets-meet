@@ -3,45 +3,10 @@
 import { Navbar, Avatar, Dropdown, DarkThemeToggle } from "flowbite-react";
 import { dropdownTheme } from "./themes/DropdownTheme";
 import Image from "next/image";
-import { signInWithGoogle, signOut, onAuthStateChanged } from "../lib/firebase/auth";
-import { useState, useEffect } from "react";
-import { connectAuthEmulator, getAuth, getRedirectResult, User } from "firebase/auth";
-import { firebaseConfig } from "../lib/firebase/config";
-
-function useUserSession(user: any) {
-    // Register the service worker that sends auth state back to server
-    // The service worker is built with npm run build-service-worker
-    useEffect(() => {
-      if ("serviceWorker" in navigator) {
-        const serializedFirebaseConfig = encodeURIComponent(
-          JSON.stringify(firebaseConfig)
-        );
-        const serviceWorkerUrl = `/auth-service-worker.js?firebaseConfig=${serializedFirebaseConfig}`;
-  
-        navigator.serviceWorker
-          .register(serviceWorkerUrl, { scope: "/", updateViaCache: "none" })
-          .then((registration) => {
-            console.log("scope is: ", registration.scope);
-            registration.update();
-          });
-      }
-    }, []);
-  
-    useEffect(() => {
-      if ("serviceWorker" in navigator) {
-        return onAuthStateChanged(async (authUser: any) => {
-          if (user?.uid === authUser?.uid) {
-            return;
-          }
-          await navigator.serviceWorker.ready;
-          await fetch(`/__/auth/wait/${authUser?.uid}`);
-            window.location.reload();
-        });
-      }
-    }, [user]);
-  
-    return user;
-  }
+import { signInWithGoogle, signOut } from "../lib/firebase/auth";
+import { useEffect } from "react";
+import { getAuth } from "firebase/auth";
+import { useUserSession } from "../lib/useUserSession";
 
 export default function NavbarComponent({ initialUser } : { initialUser: any }) {
     const user = useUserSession(initialUser);

@@ -3,7 +3,7 @@ import { Montserrat } from "next/font/google";
 import { ThemeModeScript } from "flowbite-react";
 import "./globals.css";
 import NavbarComponent from "./components/Navbar";
-import { getAuthenticatedServerApp } from "./lib/firebase/serverApp";
+import { serverUser } from "./lib/firebase/serverApp";
 
 const inter = Montserrat({ subsets: ["latin"] });
 
@@ -17,7 +17,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { currentUser } = await getAuthenticatedServerApp();
+  const currentUser = serverUser;
   return (
     <html lang="en">
       <head>
