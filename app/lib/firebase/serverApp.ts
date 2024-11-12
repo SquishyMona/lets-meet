@@ -3,7 +3,7 @@ import "server-only"
 import { headers } from "next/headers"
 import { initializeServerApp } from "firebase/app"
 import { firebaseConfig } from "./config"
-import { getAuth } from "firebase/auth";
+import { connectAuthEmulator, getAuth } from "firebase/auth";
 
 export async function getAuthenticatedServerApp() {
     try {
@@ -15,6 +15,9 @@ export async function getAuthenticatedServerApp() {
         );
 
         const auth = getAuth(firebaseServerApp);
+        if (process.env.NODE_ENV === "development") {
+            connectAuthEmulator(auth, "http://localhost:9099");
+        }
         await auth.authStateReady();
         console.log(`Auth server user: ${auth.currentUser}`)
 
